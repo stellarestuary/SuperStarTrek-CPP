@@ -5,7 +5,6 @@
 //
 
 #include "starTrek.hpp"
-#include "klingon.hpp"
 #include <cmath>
 #include <iomanip>
 #include <iostream>
@@ -50,9 +49,7 @@ string quadName[9][9] = {{"\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0", "\0"},
 
 StarTrek::StarTrek() // constructor
 {
-    cout << "ENTERPRISE OBJECT BEING CREATED. " << this << endl;
-    mTorpedo = 10;
-    mEnergy = 3000;
+    cout << "ENTERPRISE OBJECT BEING CREATED. " << this << endl << endl;
 } 
 
 StarTrek::~StarTrek() // destructor
@@ -66,8 +63,6 @@ void StarTrek::play()
     titleCard();
     introduction();
     enterpriseInput();
-    ptrKlingon1 = new Klingon(firePhasers, fireTorpedoes);
-    ptrKlingon1->klingonHealthPHA();
 }
 
 void StarTrek::enterpriseNAV()
@@ -278,47 +273,69 @@ void StarTrek::enterpriseLRS()
     enterpriseInput();
 };
 
-int StarTrek::enterprisePHA()
+void StarTrek::enterprisePHA()
 {
-    cout << "PHASERS UNAVAILABLE." << endl;
-    enterpriseInput();
-}
-
-/*
-int StarTrek::enterprisePHA()
-{
-    cout << "PHASERS LOCKED ON TARGET;   ENERGY AVAILABLE = " << mEnergy << endl;
-    cout << "NUMBER OF UNITS TO FIRE? (MAX 200 UNITS) = ";
-    while ((cin >> firePhasers && firePhasers < 0) || (firePhasers > 200))
+    if (mKlingonQuadrantRow == mQuadrantRow && mKlingonQuadrantColumn == mQuadrantColumn)
     {
-        cin.clear();
-        cin.ignore();
-        cout << "INVALID NUMBER OF UNITS" << endl;
-        cout << "ENERGY AVAILABLE = " << mEnergy << endl;
-        cout << "\nNUMBER OF UNITS TO FIRE? ";
-        continue;
+        cout << "PHASERS LOCKED ON TARGET;   ENERGY AVAILABLE = " << mEnergy << endl;
+        cout << "NUMBER OF UNITS TO FIRE? ";
+        while (!(cin >> firePhasers) || (firePhasers > 3000))
+        {
+            cin.clear();
+            cin.ignore();
+            cout << "INVALID NUMBER OF UNITS" << endl;
+            cout << "ENERGY AVAILABLE = " << mEnergy << endl;
+            cout << "\nNUMBER OF UNITS TO FIRE? ";
+            continue;
+        }
+
+        cout << firePhasers << " UNIT HIT ON KLINGON AT SECTOR " << mKlingonRow << " , " << mKlingonColumn << endl;
+        mKlingonEnergy = mKlingonEnergy - firePhasers;
+
+        if (mKlingonEnergy == 0)
+        {
+            cout << "***KLINGON DESTROYED***";
+            mScore = mScore + 10;
+            mKlingonsRemaining--;
+
+            if (mKlingonsRemaining == 0)
+            {
+                mScore = mScore + 100;
+                cout << "\n\nCONGRATULATIONS, CAPTAIN!"
+                        << "\n\nTHE LAST KLINGON BATTLE CRUISER MENACING THE FEDERATION HAS BEEN DESTROYED."
+                        << "\n\nYOUR EFFICIENCY RATING IS: " << mScore << endl << endl;
+                cin.get();
+
+                enterpriseXXX();
+            }
+        }
     }
 
-    mEnergy = mEnergy - firePhasers;
-
-    if (firePhasers == 0)
+    else
     {
+        cout << "ENERGY WILL BE EXPENDED INTO SPACE" << endl;
+        cout << "UNITS TO FIRE = ";
+        while (!(cin >> firePhasers) || (firePhasers > 3000))
+        {
+            cin.clear();
+            cin.ignore();
+            cout << "INVALID NUMBER OF UNITS" << endl;
+            cout << "ENERGY AVAILABLE = " << mEnergy;
+            cout << "\nUNITS TO FIRE = ";
+            continue;            
+        }
+        if (firePhasers == 0)
+        {
+            cout << endl;
+        }
+        if ((firePhasers > 0) && (firePhasers < mEnergy))
+        {
+            mEnergy = mEnergy - firePhasers;
+            cout << firePhasers << " EXPENDED ON EMPTY SPACE.\n" << endl;
+        }
         enterpriseInput();
     }
-
-    else if (firePhasers >= 1 && firePhasers <= 200)
-    {
-        ptrKlingon1->klingonHealthPHA();
-    }
-
-    enterpriseInput();
 };
-
-int StarTrek::getPhaser()
-{
-    return firePhasers;
-}
-*/
 
 void StarTrek::enterpriseTOR()
 {
@@ -353,7 +370,7 @@ void StarTrek::enterpriseTOR()
 
         if (torpedoSectX == mKlingonRow && torpedoSectY == mKlingonColumn)
         {
-            mKlingonEnergy = mKlingonEnergy - 200;
+            mKlingonEnergy = mKlingonEnergy - 1000;
             cout << "\n*** KLINGON DESTROYED ***";
             mScore = mScore + 10;
             mKlingonsRemaining--;
@@ -369,9 +386,23 @@ void StarTrek::enterpriseTOR()
                 enterpriseXXX();
             }
         }
+
+        /*
+        cout << "TORPEDO TRACK:" << endl;
+        usleep(1500000);
+        cout << "                0 , 0" << endl;
+        usleep(1500000);
+        cout << "                0 , 0" << endl;
+        usleep(1500000);
+        cout << "                0 , 0" << endl;
+        usleep(1500000);
+        cout << "                0 , 0" << endl;
+        usleep(1500000);
+        cout << "PHOTON TORPEDO TEST SUCCESSFUL." << endl;
+        */
     }
     enterpriseInput();
-};
+}
 
 void StarTrek::enterpriseSHE()
 {
@@ -745,7 +776,7 @@ void StarTrek::drawBoard()
                     continue;
                 }
             }
-            
+
             if (indexRow == mStarbaseRow  && indexColumn == mStarbaseColumn)
             {
                 if (mStarbaseQuadrantRow == mQuadrantRow && mStarbaseQuadrantColumn == mQuadrantColumn)
@@ -979,8 +1010,8 @@ void StarTrek::introduction()
 
     mKlingonQuadrantRow = 4;
     mKlingonQuadrantColumn = 5;
-    mKlingonRow = (rand() % 8) + 1;
-    mKlingonColumn = (rand() % 8) + 1;
+    mKlingonRow = 2;
+    mKlingonColumn = 7;
 
     mStarbaseQuadrantRow = 4;
     mStarbaseQuadrantColumn = 5;

@@ -7,8 +7,6 @@
 #ifndef starTrek_hpp
 #define starTrek_hpp
 
-#include "klingon.hpp"
-
 const int BOARD_SIZE = 8;
 
 class StarTrek
@@ -24,8 +22,7 @@ class StarTrek
     void enterpriseInput();
     void enterpriseNAV();
     void enterpriseLRS();
-    int enterprisePHA();
-    int getPhaser();
+    void enterprisePHA();
     void enterpriseTOR();
     void enterpriseSHE();
     void enterpriseDAM();
@@ -34,13 +31,8 @@ class StarTrek
     void enterpriseHLP();
     void drawBoard(); // Short-Range Scan/SRS
 
-    // int firePhasers = 0;                        // Phasers
-    int fireTorpedoes;                      // Torpedoes
-
-    // Klingon Pointers
-    Klingon* ptrKlingon1;
-
     private:
+    int firePhasers;                        // Phasers
     int shieldUnitAlloc;                    // Shield Unit Allocator
     int torpedoQuadrantX = mQuadrantRow;    // Makes Torpedo Location the same as the Enterprise...
     int torpedoQuadrantY = mQuadrantColumn; // ...preventing player form destroying Klingons outside Klingon's Quadrant
@@ -76,19 +68,20 @@ class StarTrek
     int mStarbaseRow;
     int mStarbaseColumn;
 
-    // Klingon Variables
-    int mKlingonQuadrantRow = 4;
-    int mKlingonQuadrantColumn = 5;
+    // Klingon Position Variables
+    int mKlingonQuadrantRow;
+    int mKlingonQuadrantColumn;
     int mKlingonRow;
     int mKlingonColumn;
-    int mKlingonEnergy = 200;
+
+    int mKlingonEnergy = 1000;
     int mKlingonsRemaining = 1;
 
     int mScore = 0;
-    int mEnergy;
+    int mEnergy = 3000;
     int mShields = 0;
     int mOverloadValue; // Adds Leftover Energy Units back to mEnergy if mShields is greater than 1500
-    int mTorpedo;
+    int mTorpedo = 10;
 };
 
 #endif
